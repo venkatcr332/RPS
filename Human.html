@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Human.css">
+    <title>2 Player</title>
+</head>
+<body>
+    <div id="title"><p>Rock Paper Sissor</p></div>
+    <div id="main">
+        <div id="player1">
+            <p class="nameOfPlayer1"></p>
+
+            <button id="movebtn" onclick="
+                p1move('rock');
+            ">
+                &#9994;
+            </button>
+
+            <button id="movebtn" onclick="
+                p1move('paper');
+            ">
+                &#128400;
+            </button>
+
+            <button id="movebtn" onclick="
+                p1move('sissor');
+            ">
+                &#9996;
+            </button>
+            <p class="p1score"></p>
+        </div>
+        <div id="player2">
+            <p class="nameOfPlayer2"></p>
+
+            <button id="movebtn" onclick="
+                p2move('rock');
+            ">
+                &#9994;
+            </button>
+
+            <button id="movebtn" onclick="
+                p2move('paper');
+            ">
+                &#128400;
+            </button>
+
+            <button id="movebtn" onclick="
+                p2move('sissor');
+            ">
+                &#9996;
+            </button>
+            <p class="p2score"></p>
+        </div>
+    </div>
+    <div id="res">
+        <p class="result"></p>
+    </div>
+    <script>
+        let player1name = opener.document.forms['human']['player1'].value;
+        if(player1name === ''){
+            player1name = 'Player 1';
+        }
+        document.querySelector('.nameOfPlayer1').innerHTML = `${player1name}`;
+
+        let player2name = opener.document.forms['human']['player2'].value;
+        if(player2name === ''){
+            player2name = 'Player 2';
+        }
+        document.querySelector('.nameOfPlayer2').innerHTML = `${player2name}`;
+
+        let player1move = "";
+        let player2move = "";
+
+        let chance = 1;      
+
+        let score = {
+            player1score : 0,
+            player2score : 0,
+            ties : 0
+        }
+
+        function p1move(move){
+            if(chance % 2 === 1){
+                player1move = move;
+                chance ++;
+                // Done now player2 turn
+                document.querySelector('.result').innerHTML = (`You have Selected <br> It's ${player2name}'s turn`);
+            } else {
+                document.querySelector('.result').innerHTML = (`&#128545; it's not your turn`);
+            }
+        }
+
+        function p2move(move){
+            if(chance % 2 === 0){
+                player2move = move;
+                chance ++;
+                // check result fn
+                checkresult();
+            } else {
+                document.querySelector('.result').innerHTML = (`&#128545; it's not your turn`);
+            }
+        }
+
+        function checkresult(){
+            if(player1move === player2move){
+                score.ties +=1 ;
+                tiefn(score.ties);
+            } else if(player2move === 'paper' && player1move === 'sissor'){
+                document.querySelector('.result').innerHTML = (`${player1name} is &#9996; <br><br> ${player2name} is &#128400; <br><br> <b>${player1name} gets a Point</b>`);
+                score.player1score +=1 ;
+            } else if( player2move === 'sissor' && player1move === 'rock'){
+                document.querySelector('.result').innerHTML = (`${player1name} is &#9994; <br><br> ${player2name} is &#9996; <br><br> <b>${player1name} gets a Point</b>`);
+                score.player1score +=1 ;
+            } else if( player2move === 'paper' && player1move === 'rock'){
+                document.querySelector('.result').innerHTML = (`${player1name} is &#9994; <br><br> ${player2name} is &#128400; <br><br> <b>${player2name} gets a Point</b>`);
+                score.player2score +=1 ;
+            } else if( player2move === 'sissor' && player1move === 'paper'){
+                document.querySelector('.result').innerHTML = (`${player1name} is &#128400; <br><br> ${player2name} is &#9996; <br><br> <b>${player2name} gets a Point</b>`);
+                score.player2score +=1 ;
+            } else if( player2move === 'rock' && player1move === 'paper'){
+                document.querySelector('.result').innerHTML = (`${player1name} is &#128400; <br><br> ${player2name} is &#9996; <br><br> <b>${player1name} gets a Point</b>`);
+                score.player1score +=1 ;
+            } else if( player2move === 'rock' && player1move === 'sissor'){
+                document.querySelector('.result').innerHTML = (`${player1name} is &#9996; <br><br> ${player2name} is &#9994; <br><br> <b>${player2name} gets a Point</b>`);
+                score.player2score +=1 ;
+            }
+
+            document.querySelector('.p2score').innerHTML = (`${player2name} : ${score.player2score}`);
+            document.querySelector('.p1score').innerHTML = (`${player1name} : ${score.player1score}`);
+            // localStorage.setItem('score', JSON.stringify(score));
+            if(score.player1score === 5 || score.player2score === 5){
+                displayResult();
+                resetvalues();
+            }
+            return;
+        }
+
+        function displayResult(){
+            if(score.player2score === 5){
+                document.querySelector('.result').innerHTML = (`<b>${player2name} Won</b> <br><br> Playing from Beginning`);
+            }
+            else if(score.player1score === 5){
+                document.querySelector('.result').innerHTML = (`<b>${player1name} Won</b> <br><br> Playing from Beginning`);
+            }
+            resetvalues();
+        }
+
+        function tiefn(ties){
+            document.querySelector('.result').innerHTML = (`Ties : ${ties}`);
+        }
+
+        function resetvalues(){
+            score.player2score = 0;
+            score.ties = 0;
+            score.player1score = 0;
+        }
+    </script>
+</body>
+</html>

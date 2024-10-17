@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Computer.css">
+    <title>Vs Computer</title>
+</head>
+<body>
+    <div id="title"><p>Rock Paper Sissor</p></div>
+    <div id="main">
+        <div id="player">
+            <p class="nameOfPlayer"></p>
+
+            <button class="movebtn" onclick="
+                pickcomputermove();
+                result('rock');
+            ">
+                &#9994;
+            </button>
+
+            <button class="movebtn" onclick="
+                pickcomputermove();
+                result('paper');
+            ">
+                &#128400;
+            </button>
+
+            <button class="movebtn" onclick="
+                pickcomputermove();
+                result('sissor');
+            ">
+                &#9996;
+            </button>
+            <p class="pscore"></p>
+        </div>
+        <div id="computer">
+            <p>Computer</p>
+            <button class="computerschoice">&#128512;</button>
+            <p class="cscore"></p>
+        </div>
+    </div>
+    <div id="res">
+        <p class="result"></p>
+    </div>
+
+    <script>
+        // let playername = '';
+        let playername = opener.document.forms['Computer']['Player'].value;
+        if(playername === ''){
+            playername = 'Player';
+        }
+        document.querySelector('.nameOfPlayer').innerHTML = `${playername}`;
+
+        let playermove = '';
+        let computermove = '';
+
+        // let score = JSON.parse(localStorage.getItem('score'));
+
+        // if(score === null){
+        //     score = {
+        //         playerscore : 0,
+        //         computerscore : 0,
+        //         ties : 0
+        //     }
+        // }
+
+        let score = {
+            playerscore : 0,
+            computerscore : 0,
+            ties : 0
+        }
+
+        function pickcomputermove() {
+            let random = Math.random(); // 0 - 1
+            if(random>=0 && random<1/3){
+                computermove = 'rock';
+            } else if(random>=1/3 && random<2/3){
+                computermove = 'paper';
+            } else if(random>=2/3 && random<1){
+                computermove = 'sissor';
+            }
+            let Cemoji = '';
+            if(computermove === 'rock'){
+                Cemoji = "&#9994;";
+            } else if(computermove === 'paper'){
+                Cemoji = "&#128400;";
+            } else if(computermove === 'sissor'){
+                Cemoji = "&#9996;";
+            }
+            document.querySelector('.computerschoice').innerHTML = `${Cemoji}`;
+            return; 
+        }
+
+        function result(playermove) {
+            if(playermove === computermove){
+                score.ties +=1 ;
+                tiefn(score.ties);
+            } else if(computermove === 'paper' && playermove === 'sissor'){
+                document.querySelector('.result').innerHTML = (`${playername} is &#9996; <br><br> Computer is &#128400; <br><br> <b>${playername} gets a Point</b>`);
+                score.playerscore +=1 ;
+            } else if(computermove === 'sissor' && playermove === 'rock'){
+                document.querySelector('.result').innerHTML = (`${playername} is &#9994; <br><br> Computer is &#9996; <br><br> <b>${playername} gets a Point</b>`);
+                score.playerscore +=1 ;
+            } else if(computermove === 'paper' && playermove === 'rock'){
+                document.querySelector('.result').innerHTML = (`${playername} is &#9994; <br><br> Computer is &#128400; <br><br> <b>Computer gets a Point</b>`);
+                score.computerscore +=1 ;
+            } else if(computermove === 'sissor' && playermove === 'paper'){
+                document.querySelector('.result').innerHTML = (`${playername} is &#128400; <br><br> Computer is &#9996; <br><br> <b>Computer gets a Point</b>`);
+                score.computerscore +=1 ;
+            } else if(computermove === 'rock' && playermove === 'paper'){
+                document.querySelector('.result').innerHTML = (`${playername} is &#128400; <br><br> Computer is &#9994; <br><br> <b>${playername} gets a Point</b>`);
+                score.playerscore +=1 ;
+            } else if(computermove === 'rock' && playermove === 'sissor'){
+                document.querySelector('.result').innerHTML = (`${playername} is &#9996; <br><br> Computer is &#9994; <br><br> <b>Computer gets a Point</b>`);
+                score.computerscore +=1 ;
+            }
+
+            document.querySelector('.cscore').innerHTML = (`Computer : ${score.computerscore}`);
+            document.querySelector('.pscore').innerHTML = (`${playername} : ${score.playerscore}`);
+            // localStorage.setItem('score', JSON.stringify(score));
+            if(score.playerscore === 5 || score.computerscore === 5){
+                displayResult();
+                resetvalues();
+            }
+            return;
+        }
+
+        function displayResult(){
+            if(score.computerscore === 5){
+                document.querySelector('.result').innerHTML = (`<b>Computer Won</b> <br><br> Playing from Beginning`);
+            }
+            else if(score.playerscore === 5){
+                document.querySelector('.result').innerHTML = (`<b>${playername} Won</b> <br><br> Playing from Beginning`);
+            }
+            resetvalues();
+        }
+
+        function tiefn(ties){
+            document.querySelector('.result').innerHTML = (`Ties : ${ties}`);
+        }
+
+        function resetvalues(){
+            score.computerscore = 0;
+            score.ties = 0;
+            score.playerscore = 0;
+            console.clear();
+        }
+    </script>
+</body>
+</html>
